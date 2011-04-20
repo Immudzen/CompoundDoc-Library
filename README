@@ -1,0 +1,12 @@
+This library is used by CompoundDoc and it has functions that are common between
+CompoundDoc and our websites. I am hoping these functions will be useful to others.
+
+Right now most of the stuff is pretty simple. There are some nice functions for generating
+javascript, catalog traversal safely, loading an individual record safely.
+
+There are a lot of things that I will be added to this over time to make it a much better
+library for building websites more rapidly.
+
+The goal is not to allow every feature of the javascript libraries that I am wrapping. The
+goal is to make it so that the normal usage is as simple as possible and requires as little
+code as possible.
