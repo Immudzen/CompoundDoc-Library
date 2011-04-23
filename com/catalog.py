@@ -22,7 +22,7 @@ def catalogIterItems(records):
             pass
     return temp
 
-def catalogIter3(records):
+def catalogIterItems2(records):
     "iterate over a catalog safely"
     for record in records:
         try:
