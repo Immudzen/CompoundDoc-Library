@@ -14,7 +14,7 @@ color_template = Template('''$$.fn.jPicker.defaults.images.clientPath='http://s3
                     $$.fn.jPicker.defaults.window.position.y='0';
                     $$('$class_selector').jPicker();''')
 
-tabs_template = Template('''$$("#$tab_id").tabs({cache:false ,ajaxOptions:{cache:false}, cookie:{expires:1}, load: function(event, ui) 
+tabs_template = Template('''$$("#$tab_id").tabs({cache:false ,ajaxOptions:{cache:false}, load: function(event, ui) 
             {$color_picker $nice_submit_button $lightbox} });''')
 
 lightbox_template = Template('''$$("$selector").colorbox({$args});''')
