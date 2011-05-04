@@ -36,7 +36,7 @@ def docType(REQUEST, encoding='iso-8859-15', language_code='en', frames=0, html5
 <html lang="%s">''' % language_code
 
 def link_css(css, CacheVersionURL=None, media=None):
-    "create a css link tag and version it if possible"
+    "create a css link tag and version it if possible, media is a string that is put into the media attribute"
     if CacheVersionURL is not None:
         url = CacheVersionURL.version_absolute_url_path(css)
     else:
