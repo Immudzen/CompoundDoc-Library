@@ -1,7 +1,7 @@
 import zExceptions
 
 def catalogIter(records):
-    "iterate over a catalog safely"
+    "iterate over a catalog safely and return the object for a record"
     for record in records:
         try:
             item = record.getObject()
@@ -11,7 +11,7 @@ def catalogIter(records):
             pass
 
 def catalogIterItems(records):
-    "iterate over a catalog safely"
+    "iterate over a catalog safely and return a list of (record, object) pairs"
     temp = []
     for record in records:
         try:
@@ -23,7 +23,7 @@ def catalogIterItems(records):
     return temp
 
 def catalogIterItems2(records):
-    "iterate over a catalog safely"
+    "iterate over a catalog safely and return a generator of (record, object) pairs (does not work inside zope)"
     for record in records:
         try:
             item = record.getObject()
@@ -33,7 +33,7 @@ def catalogIterItems2(records):
             pass
 
 def loadRecord(record):
-    "load this single record"
+    "load this single record safely"
     try:
         return record.getObject()
     except (zExceptions.Unauthorized, zExceptions.NotFound, KeyError, AttributeError):
