@@ -19,3 +19,11 @@ def isAuthenticated():
 def isRole(role):
     "return True if the current user has the role of [role] else False"
     return getSecurityManager().getUser().has_role([role])
+    
+def no_dtml(string):
+    "return true if this object has no dtml in it"
+    return 'dtml' not in string
+    
+def has_dtml(string):
+    "return true if this string has dtml in it"
+    return 'dtml' in string
