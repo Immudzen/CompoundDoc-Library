@@ -1,4 +1,6 @@
 import itertools
+import com.detection
+import com.parsers
 
 def createTable(rows, table_classes=None):
     """create a table from this list it must be a balanced list within a list, table_classes is an
@@ -51,3 +53,18 @@ def link_js(js, CacheVersionURL=None):
     else:
         url = js.absolute_url_path()
     return '<script type="text/javascript" src="%s"></script>' % url
+    
+def generate_url(data, context, REQUEST, url_callable=None):
+    "generate a url from this data and return it otherwise return None"
+    href = None
+    if url_callable is not None:
+        href = url_callable(data)
+    elif not com.detection.no_dtml(data):
+        href = com.parsers.run_dtml(data, context, REQUEST)
+    elif '://' in data or 'javascript:' in data:
+        href = data
+    else:
+        item = context.restrictedTraverse(data,None)
+        if item is not None:
+            href = item.absolute_url_path()
+    return href
