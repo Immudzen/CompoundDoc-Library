@@ -1,5 +1,6 @@
 import csv
 import StringIO
+import Globals
 
 def makeCSV(seq, eol='\n', sep=','):
     """return a string that is a csv file with the eol and seperator handed in
@@ -22,3 +23,7 @@ def makeCSVStream(seq, REQUEST, eol='\n', sep=',', filename='file.csv'):
     REQUEST.RESPONSE.setHeader('Content-Type',"text/x-csv")
     writer = csv.writer(REQUEST.RESPONSE, lineterminator=eol, delimiter=sep)
     writer.writerows(seq)
+    
+def run_dtml(data, context, REQUEST):
+    "run this dtml fragement and return it"
+    return Globals.HTML(data, globals())(context, REQUEST)
