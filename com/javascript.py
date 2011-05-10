@@ -7,6 +7,7 @@ google_template = Template('''var gaTrackCode = "$tracking_code";
     var pageTracker = _gat._getTracker(gaTrackCode);
     pageTracker._initData();
     pageTracker._trackPageview();
+    pageTracker._trackPageLoadTime();
   }); ''')
 
 color_template = Template('''$$.fn.jPicker.defaults.images.clientPath='http://s3.amazonaws.com/media.webmediaengineering.com/CompoundDoc/images/';
