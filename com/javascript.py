@@ -32,8 +32,8 @@ def default_javascript(enable_gzip):
     """include the latest version of jquery, jquery ui and the combined js file
     This function takes two arguements one is if gzip should be enabled"""
     gz = '.gz' if enable_gzip else ''
-    return '''<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/jquery-ui.min.js"></script>
+    return '''<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js"></script>
         <script type="text/javascript" src="http://s3.amazonaws.com/media.webmediaengineering.com/CompoundDoc/default_9{gz}.js"></script>'''.format(gz=gz)
 
 def google_analytics(tracking_code):
