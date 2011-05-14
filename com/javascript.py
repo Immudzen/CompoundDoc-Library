@@ -10,6 +10,21 @@ google_template = Template('''var gaTrackCode = "$tracking_code";
     pageTracker._trackPageLoadTime();
   }); ''')
 
+range_template = Template('''$$('#$start_id').attr('readonly', 'readonly');$$('#$stop_id').attr('readonly', 'readonly');
+$$("#$slider_id").slider({
+            range: true,
+            min: $min_value,
+            max: $max_value,
+            values: [ $start_value, $stop_value ],
+            step:$step,
+            slide: function( event, ui ) {
+                $$( "#$start_id" ).val(ui.values[ 0 ] );
+                $$( "#$stop_id" ).val(ui.values[ 1 ] );
+            }
+        });
+''')
+
+
 color_template = Template('''$$.fn.jPicker.defaults.images.clientPath='http://s3.amazonaws.com/media.webmediaengineering.com/CompoundDoc/images/';
                     $$.fn.jPicker.defaults.window.position.x='0';
                     $$.fn.jPicker.defaults.window.position.y='0';
@@ -91,6 +106,14 @@ def accordion_html(accordion_id, tabs):
         temp.append(tab_format % (title, content))
     temp.append('</div>')
     return ''.join(temp)
+
+def range_init(start_id, start_value, stop_id, stop_value, slider_id, min_value, max_value, step):
+    """Create a slider object, the slider will set the controls for start and stop value to readonly
+    so they can't be changed except with the slider. The arguements are the id of the start input element,
+    the value of the start input element, the id of the stop input element, the value of the stop element
+    the id of the div that holds the slider, the minimum allowed value, the maximum allowed value and the step size"""
+    return range_template.substitute(start_id=start_id, start_value=start_value, stop_id=stop_id, 
+        stop_value=stop_value, slider_id=slider_id, min_value=min_value, max_value=max_value, step=step)
 
 def lightbox_init(selector="a[rel^='lightbox']", args=None):
     """create a lightbox for the current selector, you can also hand in
