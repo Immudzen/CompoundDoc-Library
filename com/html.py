@@ -37,9 +37,10 @@ def docType(REQUEST, encoding='iso-8859-15', language_code='en', frames=0, html5
         return '''<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="%s">''' % language_code
 
-def favicon(favicon_object, CacheVersionURL=None):
+def favicon(favicon_container, CacheVersionURL=None):
     """creates a favicon link and optionaly versions it if CacheVersionURL is handed in
     you need to hand in the favicon object and CacheVersionURL if you want the url versioned"""
+    favicon_object = favicon_container['favicon.ico']
     if CacheVersionURL is not None:
         url = CacheVersionURL.version_absolute_url_path(favicon_object)
     else:
