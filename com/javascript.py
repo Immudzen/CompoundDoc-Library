@@ -1,4 +1,6 @@
 from string import Template
+import urllib
+import os.path
 
 google_template = Template('''var gaTrackCode = "$tracking_code";
   var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
@@ -30,7 +32,11 @@ color_template = Template('''$$.fn.jPicker.defaults.images.clientPath='http://s3
                     $$.fn.jPicker.defaults.window.position.y='0';
                     $$('$class_selector').jPicker();''')
 
-tabs_template = Template('''$$("#$tab_id").tabs({cache:false ,ajaxOptions:{cache:false}, load: function(event, ui) 
+tabs_template_renders = Template('''
+$$("#$tab_id").tabs({cache:false ,ajaxOptions:{cache:true}, load: function(event, ui){$color_picker $nice_submit_button $lightbox} });
+''')
+
+tabs_template = Template('''$$("#$tab_id").tabs({cache:false ,ajaxOptions:{cache:true}, load: function(event, ui) 
             {$color_picker $nice_submit_button $lightbox} });''')
 
 lightbox_template = Template('''$$("$selector").colorbox({$args});''')
@@ -51,6 +57,11 @@ def default_javascript(enable_gzip):
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js"></script>
         <script type="text/javascript" src="http://s3.amazonaws.com/media.webmediaengineering.com/CompoundDoc/default_9{gz}.js"></script>'''.format(gz=gz)
 
+def js_url_swap():
+    """swap the url stored in data-url if there is one with the value in href, this function shoudl be run
+    before any other js"""
+    return '$("a[data-url]").each(function(index, Element) {$(this).attr("href", $(this).data("url"))});'
+
 def google_analytics(tracking_code):
     """create google analystics tracking code on a site that can be lazy loaded 
     inside a document ready function, takes the tracking code as a required arguement"""
@@ -66,6 +77,12 @@ def tabs_init(tab_id):
     return tabs_template.substitute(tab_id=tab_id, nice_submit_button=nice_submit_button(), 
         lightbox=lightbox_init(), color_picker=color_picker_init())
 
+def tabs_init_renders(tab_id):
+    """create jquery tabs with the given tab_id, this function takes care to reinit all the normal stuff
+    we do on each tab"""
+    return tabs_template_renders.substitute(tab_id=tab_id, nice_submit_button=nice_submit_button(), 
+        lightbox=lightbox_init(), color_picker=color_picker_init())
+        
 def tabs_html(tab_id, tabs):
     """create ajax tabs with the given tab_id
     the format of tabs is a sequence of (url, tab titles)"""
@@ -73,6 +90,33 @@ def tabs_html(tab_id, tabs):
     temp = ['<div id="%s"><ul>' % tab_id]
     for url, tab_title in tabs:
         temp.append(tab_format % (url, tab_title))
+    temp.append('</ul></div>')
+    return ''.join(temp)
+
+def tabs_html_renders(tab_id, tabs, CacheVersionURL=None):
+    """Create tabs that only work with renders but are also SEO friendly
+    the format for tabs is  (compounddoc, tab title, render name, isCacheable(1/0), query_dict)
+    if you don't have a query_dict it can be set to None
+    If you hand in CacheVersionURL and a tab is Cacheable then a CacheAble url will
+    be generated for the tabs
+    """
+    tab_format = '<li><a href="%s/%s%s" data-url="%s/view%s">%s</a></li>'
+    temp = ['<div id="%s"><ul>' % tab_id]
+    for cdoc, tab_title, render_name, isCacheable, query_dict in tabs:
+        js_query_dict = {'display':render_name, 'showWrapper':0}
+        if query_dict is not None:
+            no_js_query = '?'+ urllib.urlencode(query_dict)
+            query_dict.update(js_query_dict)
+            js_query = '?'+ urllib.urlencode(query_dict)
+        else:
+            no_js_query = ''
+            js_query = '?'+ urllib.urlencode(js_query_dict)
+        base_url = cdoc.absolute_url_path()
+        if CacheVersionURL is not None and isCacheable:
+            base_url_js = CacheVersionURL.version_absolute_url_path(cdoc)
+        else:
+            base_url_js = base_url
+        temp.append(tab_format % (base_url, render_name, no_js_query, base_url_js, js_query, tab_title))
     temp.append('</ul></div>')
     return ''.join(temp)
 
@@ -138,6 +182,13 @@ def lightbox_init_youtube(selector="a[rel^='lightbox']", args=None):
     
 def lightbox_html():
     return ''
+
+def lightbox_html_single(url, js_url, lightbox_id, content):
+    """this will create the html for a lightbox, it needs a url for when javascript is off
+    a url to use when javascript is on (this is normally a url that does not have a header and footer),
+    the id of the lightbox to use in javascript and the content that will be clickable, this is usually
+    an image"""
+    return '<a href="%s" data-url="%s" id="%s">%s</a>' % (url, js_url, lightbox_id, content)
 
 def nice_submit_button():
     "create the javascript for nice jquery submit buttons"
